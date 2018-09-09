@@ -3,37 +3,107 @@
 <head>
 	<title>My Page</title>
 	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </head>
 <body>
  <link rel="stylesheet" href="./css/style.css">
+ <?php 
+	$servername = "localhost";
+	$username = "user2";
+	$password = "123";
+	$dbname = "donhang";
+	// Create connection
+	$conn = new mysqli($servername, $username, $password, $dbname);
+
+	// Check connection
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	} 
+	
+?>
+<?php if(isset($_POST) && $_POST != null){
+	$name = $_POST['name'];
+	$count = $_POST['count'];
+	$date = $_POST['date'];
+	$sql = "INSERT INTO don_hang_tb (name, quan, date) VALUES ('" . $name ."', '". $count ."', '".$date."')";
+
+	if ($conn->query($sql) === TRUE) { 
+		$mess = '<div class="alert alert-success" role="alert">
+				  Thanh cong!!
+				</div>';
+	} else {
+		echo "Error: " . $sql . "<br>" . $conn->error;
+	}
+}?> 
+<?php 
+	$query = "SELECT * FROM don_hang_tb";
+	$result = $conn->query($query);
+?>
 <div class="container">
- 
-<header>
-   <h1>ĂN VẶT HONEYNET</h1>
-</header>
-   
-<nav>
-	<h2>Lịch Sử</h2>
-</nav>
- 
-<article>
-	<h1>Thông tin đơn hàng</h1>
- 	<form name="donHang">
- 		<table>
- 		<tr>
- 			<td><strong>Tên món ăn</strong></td>
- 			<td><input type="text" placeholder="Tên món ăn" name="tenMon" value=""></td>
- 		</tr>
- 		<tr>
- 			<td><strong>Số lượng</strong></td>
- 			<td><input type="text" placeholder="Số lượng" name="sLuong" value=""></td>
- 		</tr>
- 		<tr>
- 			<td colspan="2" align="center"><input type="submit" name="xacNhan" value="Xác Nhận"></td>
- 		</tr>
- 		</table>
- 	</form>
-</article>
+ <div class="row">
+ 	<div class="col-md-12">
+ 		<header>
+		   <h1>ĂN VẶT HONEYNET</h1>
+		</header>
+ 	</div>
+ </div>
+ <div class="row">
+		<div class="col-md-4">
+			<h2>LỊCH SỬ</h2>
+		 		<table class="table table-striped">
+				  <thead>
+				    <tr>
+				      <th scope="col">Tên món</th>
+				      <th scope="col">Số lượng</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	<?php 
+				  		if ($result->num_rows > 0) {
+					    // output data of each row
+					    while($row = $result->fetch_assoc()) { ?>
+					    	<tr>
+						      <td><?php echo $row['name']?></td>
+						      <td><?php echo $row['quan']?></td>
+						    </tr>
+					      
+					    <?php }
+					    } ?>
+				    
+				  </tbody>
+				</table>
+		 </div>
+
+		 <div class="col-md-8">
+		 	<?php echo (isset($mess)) ? $mess : ''?>
+		 	<form method="POST">
+			  <div class="form-group row">
+			    <label for="inputEmail3" class="col-sm-2 col-form-label">Tên món</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control"  name="name" placeholder="Tên món">
+			    </div>
+			  </div>
+			  <div class="form-group row">
+			    <label for="inputPassword3" class="col-sm-2 col-form-label">Số lượng</label>
+			    <div class="col-sm-10">
+			      <input type="number" class="form-control" name="count" placeholder="Số lượng">
+			    </div>
+			  </div>
+			  <div class="form-group row">
+			    <label for="inputPassword3" class="col-sm-2 col-form-label">Ngày</label>
+			    <div class="col-sm-10">
+			      <input type="date" class="form-control" name="date" placeholder="Chọn ngày">
+			    </div>
+			  </div>
+			  <div class="form-group row">
+			    <div class="col-sm-10">
+			      <button type="submit" class="btn btn-primary">Lưu</button>
+			    </div>
+			  </div>
+			</form>
+		 </div>
+ 	 </div>
  
 <footer>Copyright &copy; 2018 HUYNH VY</footer>
 </div>
@@ -41,32 +111,3 @@
 <strong></strong>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
